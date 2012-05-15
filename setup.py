@@ -11,4 +11,11 @@ setup(
     author_email='kelleyk@kelleyk.net',
     description='A library for running shell pipelines using shell-like syntax',
     license='MIT',
-    url='http://github.com/kelleyk/iterpipes3')
+    url='http://github.com/kelleyk/iterpipes3',
+    classifiers = [
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.0',
+        'Programming Language :: Python :: 3.1',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        ])
