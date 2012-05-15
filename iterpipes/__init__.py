@@ -158,7 +158,7 @@ defining the following function:
   [itertools]: http://docs.python.org/library/itertools.html
 
 '''
-
+from __future__ import with_statement
 
 from contextlib import contextmanager
 import re, errno, locale
@@ -166,6 +166,9 @@ from subprocess import Popen, PIPE, CalledProcessError
 from threading import Thread
 from codecs import iterdecode
 from functools import reduce
+
+import six
+
 
 __all__ = [
     'cmd', 'bincmd', 'linecmd', 'run', 'call', 'check_call', 'format',
@@ -230,7 +233,7 @@ def cmd(command, *args, **kwargs):
         return iterdecode(xs, encoding)
 
     def encode(xs):
-        if isinstance(input, str):
+        if isinstance(input, six.text_type):
             return [xs.encode(encoding)]
         elif xs is None:
             return xs
@@ -369,7 +372,7 @@ def _run_pipeline(command, input, **opts):
         raise TypeError('input must be iterable or None, got %r' %
                         type(input).__name__)
 
-    if isinstance(input, str):
+    if isinstance(input, six.text_type):
         input = [input]
 
     opts = opts.copy()
@@ -380,7 +383,7 @@ def _run_pipeline(command, input, **opts):
     with _popen(command, **opts) as p:
         if p.stdout is None:
             return
-        xs = (iter(lambda: p.stdout.read(bufsize), b'')
+        xs = (iter(lambda: p.stdout.read(bufsize), six.b(''))
               if bufsize != 1
               else p.stdout)
         for x in xs:

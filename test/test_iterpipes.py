@@ -10,6 +10,8 @@ from iterpipes import (bincmd, cmd, linecmd, run, call, check_call, format,
 from iterpipes.testing import Fun, each, join, strip
 from subprocess import STDOUT
 
+import six
+
 STDOUT_FILENO = 1
 
 def test_basic_single():
@@ -66,15 +68,15 @@ def test_line_buffering():
     eq_(list(cmd('echo "foo\nbar"', bufsize=1)([])), ['foo\n', 'bar\n'])
 
 def test_cmd():
-    text = 'привет, λ!\nλx. x\nдо свидания\n'
-    regexp = 'λ[a-zA-Z]\.'
+    text = six.u('привет, λ!\nλx. x\nдо свидания\n')
+    regexp = six.u('λ[a-zA-Z]\.')
     grep = compose(join, cmd('grep {}', regexp))
-    eq_(grep(text), 'λx. x\n')
+    eq_(grep(text), six.u('λx. x\n'))
 
 def test_linecmd():
-    text = 'абв\nabc\n'
+    text = six.u('абв\nabc\n')
     tr = linecmd('tr a-z A-Z')
-    eq_(list(tr(text)), ['абв\n', 'ABC\n'])
+    eq_(list(tr(text)), [six.u('абв\n'), six.u('ABC\n')])
 
 def test_run_output():
     eq_(''.join(run(cmd('echo foo'))), 'foo\n')
@@ -103,9 +105,9 @@ def test_calls():
     ok_(call(rmdir) != 0)
 
 def test_string_input():
-    eq_(''.join(run(cmd('tr t T'), 'input')), 'inpuT')
-    eq_(''.join(run(cmd('tr t T'), 'input')), 'inpuT')
-    eq_(''.join(run(cmd('tr t T'), ['input'])), 'inpuT')
+    eq_(''.join(run(cmd('tr t T'), 'input')), six.u('inpuT'))
+    eq_(''.join(run(cmd('tr t T'), six.u('input'))), six.u('inpuT'))
+    eq_(''.join(run(cmd('tr t T'), [six.u('input')])), six.u('inpuT'))
 
 if __name__ == '__main__':
     test_basic_single()
