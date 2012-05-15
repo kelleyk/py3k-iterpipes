@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
+
 import sys
 from itertools import islice
 from nose.tools import eq_, ok_, assert_raises
@@ -20,7 +20,7 @@ def test_basic_many():
 
 def test_huge_input():
     wc = compose(join, cmd('wc -l'))
-    eq_(wc('%d\n' % x for x in xrange(10000)), '10000\n')
+    eq_(wc('%d\n' % x for x in range(10000)), '10000\n')
 
 def test_make_pipeline():
     lines = ''.join(run(cmd(r'echo a b c b a | tr {} \\n | sort | uniq',
@@ -66,15 +66,15 @@ def test_line_buffering():
     eq_(list(cmd('echo "foo\nbar"', bufsize=1)([])), ['foo\n', 'bar\n'])
 
 def test_cmd():
-    text = u'привет, λ!\nλx. x\nдо свидания\n'
-    regexp = u'λ[a-zA-Z]\.'
+    text = 'привет, λ!\nλx. x\nдо свидания\n'
+    regexp = 'λ[a-zA-Z]\.'
     grep = compose(join, cmd('grep {}', regexp))
-    eq_(grep(text), u'λx. x\n')
+    eq_(grep(text), 'λx. x\n')
 
 def test_linecmd():
-    text = u'абв\nabc\n'
+    text = 'абв\nabc\n'
     tr = linecmd('tr a-z A-Z')
-    eq_(list(tr(text)), [u'абв\n', u'ABC\n'])
+    eq_(list(tr(text)), ['абв\n', 'ABC\n'])
 
 def test_run_output():
     eq_(''.join(run(cmd('echo foo'))), 'foo\n')
@@ -103,9 +103,9 @@ def test_calls():
     ok_(call(rmdir) != 0)
 
 def test_string_input():
-    eq_(''.join(run(cmd('tr t T'), 'input')), u'inpuT')
-    eq_(''.join(run(cmd('tr t T'), u'input')), u'inpuT')
-    eq_(''.join(run(cmd('tr t T'), [u'input'])), u'inpuT')
+    eq_(''.join(run(cmd('tr t T'), 'input')), 'inpuT')
+    eq_(''.join(run(cmd('tr t T'), 'input')), 'inpuT')
+    eq_(''.join(run(cmd('tr t T'), ['input'])), 'inpuT')
 
 if __name__ == '__main__':
     test_basic_single()

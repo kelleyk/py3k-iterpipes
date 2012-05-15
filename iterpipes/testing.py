@@ -23,7 +23,6 @@
 
 '''Various experimental stuff for iterpipes.'''
 
-from itertools import imap
 from iterpipes import compose
 
 class Fun(object):
@@ -49,7 +48,7 @@ def join(xs):
 
 def each(f):
     '(a -> b) -> (Iterable(a) -> Iterable(b)'
-    return lambda xs: imap(f, xs)
+    return lambda xs: map(f, xs)
 
 def strip(chars=None):
     return each(lambda s: s.strip(chars))

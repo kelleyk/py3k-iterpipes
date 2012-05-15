@@ -159,12 +159,13 @@ defining the following function:
 
 '''
 
-from __future__ import with_statement
+
 from contextlib import contextmanager
 import re, errno, locale
 from subprocess import Popen, PIPE, CalledProcessError
 from threading import Thread
 from codecs import iterdecode
+from functools import reduce
 
 __all__ = [
     'cmd', 'bincmd', 'linecmd', 'run', 'call', 'check_call', 'format',
@@ -229,7 +230,7 @@ def cmd(command, *args, **kwargs):
         return iterdecode(xs, encoding)
 
     def encode(xs):
-        if isinstance(input, (str, unicode)):
+        if isinstance(input, str):
             return [xs.encode(encoding)]
         elif xs is None:
             return xs
@@ -354,7 +355,7 @@ def _retcode(xs):
     'Iterable(a) -> int'
     try:
         _consume(xs)
-    except CalledProcessError, e:
+    except CalledProcessError as e:
         return e.returncode
     else:
         return 0
@@ -368,7 +369,7 @@ def _run_pipeline(command, input, **opts):
         raise TypeError('input must be iterable or None, got %r' %
                         type(input).__name__)
 
-    if isinstance(input, (str, unicode)):
+    if isinstance(input, str):
         input = [input]
 
     opts = opts.copy()
@@ -379,7 +380,7 @@ def _run_pipeline(command, input, **opts):
     with _popen(command, **opts) as p:
         if p.stdout is None:
             return
-        xs = (iter(lambda: p.stdout.read(bufsize), '')
+        xs = (iter(lambda: p.stdout.read(bufsize), b'')
               if bufsize != 1
               else p.stdout)
         for x in xs:
@@ -396,10 +397,10 @@ def _popen(*args, **kwargs):
         try:
             for x in xs:
                 fd.write(x)
-        except IOError, e:
+        except IOError as e:
             if e.errno != errno.EPIPE:
                 write_excpts.append(e)
-        except Exception, e:
+        except Exception as e:
             write_excpts.append(e)
         finally:
             fd.close()
@@ -423,7 +424,7 @@ def _popen(*args, **kwargs):
                     raise write_excpts.pop()
         else:
             yield p
-    except Exception, e:
+    except Exception as e:
         if hasattr(p, 'terminate'):
             p.terminate()
         raise
