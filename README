@@ -1,0 +1,106 @@
+README
+======
+
+This is a beta release. The library may be changed significantly. Comments are
+welcome.
+
+
+Rationale
+---------
+
+Python is a good choice for many software tools, but it lacks clarity and
+simplicity of command shells when it comes to running command pipelines from
+scripts. The standard ``subprocess`` module provides basic inter-processing
+tools, but it requires lots of lines to express a single shell line.
+
+``iterpipes`` is trying to overcome this limitation by representing a shell
+command pipeline as *a function over iterables*, similar to functions from the
+standard ``itertools`` module.
+
+
+Facts
+-----
+
+* Enables piping infinite streams through shell pipelines in Python
+* Represents a shell command as an ordinary function over iterables
+* Uses standard interprocessing modules ``subprocess``, ``threading``
+* Allows doing things marked as red warning boxes at the `subprocess
+  help page`__
+* 0.2 KLOC, or 0.6 KLOC with documentation and tests
+
+__ http://docs.python.org/library/subprocess.html
+
+
+Basic Usage
+-----------
+
+Get the iterable of files in the ``/`` directory::
+
+    >>> from iterpipes import linecmd, run
+    >>> files = [x.strip('\n') for x in run(linecmd('ls {}', '/'))]
+    >>> files[:3]
+    [u'bin', u'boot', u'dev']
+
+Pipe 100 000 lines through ``wc -l``, join the resulting iterable into a
+single string and convert it to an ``int``::
+
+    >>> from iterpipes import cmd
+    >>> wc = lambda xs: int(''.join(cmd('wc -l')(xs)).strip())
+    >>> numbers = ('%d\n' % i for i in xrange(100000))
+    >>> wc(numbers)
+    100000
+
+Delete ``/tmp/foo/bar`` and all the files under it, get the return code or check
+for exceptions::
+
+    >>> from iterpipes import call, check_call
+    >>> call(cmd('rm -fr {}', '/tmp/foo/bar'))
+    0
+    >>> check_call(cmd('rm -fr {}', '/tmp/foo/bar'))
+
+Total lines in ``*.py`` files under the ``.`` directory, use safe shell
+parameters formatting::
+
+    >>> total = cmd('find {} -name {} -print0 | xargs -0 wc -l | '
+    ...             'tail -1 | awk {}',
+    ...             '.',
+    ...             '\*.py',
+    ...             '{print $1}')
+    >>> int(''.join(run(total)).strip())
+    616
+
+Load an Atom feed of the ``iterpipes`` source code repository using ``curl``::
+
+    >>> from iterpipes import bincmd
+    >>> from xml.etree import ElementTree as etree
+    >>> url = 'http://bitbucket.org/vlasovskikh/iterpipes/atom/'
+    >>> e = etree.fromstring(''.join(run(bincmd('curl -s {}', url))))
+    >>> e.tag
+    '{http://www.w3.org/2005/Atom}feed'
+
+
+More Documentation
+------------------
+
+The source code of ``iterpipes`` contains lots of documentation. Type ``pydoc
+iterpipes`` in the console after installation to get a manual page, or consult
+the source code directly.
+
+
+Reviews and Discussions
+-----------------------
+
+* `With iterpipes, python is ready to replace bash for scripting. Really`__
+
+__ http://lateral.netmanagers.com.ar/weblog/posts/BB860.html
+
+
+Download
+--------
+
+Clone `the iterpipes Mercurial repository`__ if you are interested in following
+the library. There is also a `Git clone`__ at GitHub.
+
+__ http://bitbucket.org/vlasovskikh/iterpipes/
+__ http://github.com/vlasovskikh/iterpipes-mirror
+

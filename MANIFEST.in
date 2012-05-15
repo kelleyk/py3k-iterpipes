@@ -1,0 +1,3 @@
+include TODO LICENSE MANIFEST.in
+recursive-include test *.py
+
