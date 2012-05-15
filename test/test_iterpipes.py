@@ -5,9 +5,9 @@ import sys
 from itertools import islice
 from nose.tools import eq_, ok_, assert_raises
 
-from iterpipes import (bincmd, cmd, linecmd, run, call, check_call, format,
+from iterpipes3 import (bincmd, cmd, linecmd, run, call, check_call, format,
                        compose, CalledProcessError)
-from iterpipes.testing import Fun, each, join, strip
+from iterpipes3.testing import Fun, each, join, strip
 from subprocess import STDOUT
 
 import six

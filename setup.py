@@ -3,13 +3,12 @@
 from distutils.core import setup
 
 setup(
-    name='iterpipes',
+    name='iterpipes3',
     version='0.4',
-    packages=['iterpipes'],
+    packages=['iterpipes3'],
     requires=['six'],
-    author='Andrey Vlasovskikh',
-    author_email='andrey.vlasovskikh@gmail.com',
+    author='Kevin Kelley',
+    author_email='kelleyk@kelleyk.net',
     description='A library for running shell pipelines using shell-like syntax',
     license='MIT',
-    url='http://bitbucket.org/vlasovskikh/iterpipes/')
-
+    url='http://github.com/kelleyk/iterpipes3')

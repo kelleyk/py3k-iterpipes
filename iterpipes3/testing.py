@@ -23,7 +23,7 @@
 
 '''Various experimental stuff for iterpipes.'''
 
-from iterpipes import compose
+from iterpipes3 import compose
 
 class Fun(object):
     'Function wrapper that defines the function composition operator `|`.'
